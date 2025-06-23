@@ -1,13 +1,3 @@
-/**
- * Creates NAT gateway or NAT instance resources for the VPC.
- * 
- * Creates an elastic IP, NAT gateway, NAT instance, and related resources conditionally based on input variables. 
- * NAT gateway is created if enable_nat_gateway variable is true. 
- * NAT instance is created if enable_nat_instance variable is true.
- * If The NAT instance is created and automatic security group is created to allow HTTP, HTTPS, SSH ingress.
- * Egress is allowed to all for the NAT instance security group.
- * If public_access variable is true, ingress is opened to the terraform runner IP. 
- */
 
 ##########################
 # NAT-GATEWAT CREATION
@@ -60,11 +50,7 @@ data "aws_ami" "ubuntu_os" {
 
 // Create a NAT INSTANCE if var.enable_nat_instance = true
 resource "aws_instance" "nat_ec2" {
-  count = var.enable_nat_instance == true ? 1 : 0
-  # checkov:skip=CKV_AWS_126: ADD REASON
-  # checkov:skip=CKV_AWS_8: ADD REASON
-  # checkov:skip=CKV_AWS_135: ADD REASON
-  # checkov:skip=CKV_AWS_79: ADD REASON
+  count                       = var.enable_nat_instance == true ? 1 : 0
   ami                         = data.aws_ami.ubuntu_os[0].id
   instance_type               = local.nat_instance_type
   tenancy                     = "default"

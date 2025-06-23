@@ -1,7 +1,4 @@
-/**
- * Outputs details about the VPC resources created by the module.
- * Includes IDs for the VPC, internet gateway, NAT gateway/instance, subnets.
- */
+
 
 output "vpc_details" {
   value = {
@@ -12,6 +9,6 @@ output "vpc_details" {
     nat_instance_id = var.enable_nat_instance == true ? aws_instance.nat_ec2[0].id : "N/A"
     subnets_id      = { for k, y in aws_subnet.main : k => y.id }
     priv_rt         = var.enable_nat_instance == true ? aws_route_table.priv_rt[0].id : "N/A"
-    pub_rt         = aws_route_table.pub_rt[0].id
+    pub_rt          = aws_route_table.pub_rt[0].id
   }
 }
