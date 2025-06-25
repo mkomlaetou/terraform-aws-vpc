@@ -9,8 +9,9 @@ variable "aws_region" {
 }
 
 variable "vpc_cidr" {
-  description = "vpc ne twork address (cidr)"
+  description = "vpc network address (cidr)"
   type        = string
+  default     = ""
 }
 
 variable "enable_igw" {
