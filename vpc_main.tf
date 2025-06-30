@@ -1,9 +1,3 @@
-/**
- * Creates a VPC with an internet gateway, subnets, route tables, and route associations.
- * The VPC, IGW, subnets, route tables, and associations are created as resources.
- * Public subnets use a route table with a default route to the IGW.
- * Private subnets use a route table with a default route to a NAT gateway or NAT instance.  
-*/
 ##########################
 # VPC CREATION
 ##########################

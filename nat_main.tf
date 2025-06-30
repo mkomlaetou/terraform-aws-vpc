@@ -1,14 +1,3 @@
-/**
- * Creates NAT gateway or NAT instance resources for the VPC.
- * 
- * Creates an elastic IP, NAT gateway, NAT instance, and related resources conditionally based on input variables. 
- * NAT gateway is created if enable_nat_gateway variable is true. 
- * NAT instance is created if enable_nat_instance variable is true.
- * If The NAT instance is created and automatic security group is created to allow HTTP, HTTPS, SSH ingress.
- * Egress is allowed to all for the NAT instance security group.
- * If public_access variable is true, ingress is opened to the terraform runner IP. 
- */
-
 ##########################
 # NAT-GATEWAT CREATION
 ##########################
