@@ -123,7 +123,8 @@ provider "aws" {
 ## SET UP NETWORK
 ##########################################
 module "vpc-01" {
-  source             = "git::github.com/mkomlaetou/terraform-aws-vpc.git?ref=v1.0.2"
+source             = "mkomlaetou/vpc/aws"
+
   vpc_name           = var.vpc-01.name
   aws_region         = var.vpc-01.region
   vpc_cidr           = var.vpc-01.cidr
