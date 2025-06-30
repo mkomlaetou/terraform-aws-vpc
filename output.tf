@@ -1,3 +1,4 @@
+
 output "vpc_details" {
   value = {
     vpc_id          = aws_vpc.main.id
