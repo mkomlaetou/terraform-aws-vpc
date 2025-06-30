@@ -123,8 +123,7 @@ provider "aws" {
 ## SET UP NETWORK
 ##########################################
 module "vpc-01" {
-  # source             = "git::github.com/mkomlaetou/terraform-aws-vpc.git?ref=v1.0.1"
-  source             = "../modules/terraform-aws-vpc"
+  source             = "git::github.com/mkomlaetou/terraform-aws-vpc.git?ref=v1.0.2"
   vpc_name           = var.vpc-01.name
   aws_region         = var.vpc-01.region
   vpc_cidr           = var.vpc-01.cidr
@@ -141,7 +140,7 @@ variable "vpc-01" {
     region        = "eu-west-1"
     cidr          = "10.19.0.0/16"
     igw           = true
-    ngw           = false
+    ngw           = true
     ngw_sb_name = "public-subnet-01"
   }
 }

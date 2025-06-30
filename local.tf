@@ -1,12 +1,3 @@
-/**
- * Default tags to apply to all resources. Merged with var.custom_tags.
- */
-
-/**
- * Set nat instance type based on architecture if not specified.
- * Defaults to t3.micro on x86 and t4g.micro on arm64.
- */
- 
 # Tags
 locals {
   default_tags = {

@@ -20,8 +20,6 @@ resource "aws_internet_gateway" "main" {
 }
 
 
-
-
 ##########################
 # SUBNETS CREATION
 ##########################
