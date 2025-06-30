@@ -1,19 +1,42 @@
-## PURPOSE
 
-This module allows you to create an IPv4 AWS VPC with the following 
-* One IGW by default
-* One Nat Gateway or Nat Instance 
-* As many subnets (AZ)
-* Automatic custom route to IGW for public subnet and Nat Gateway/Instance for private subnet
+## Overview
 
-## MODULE FILE STRUCTURE
+This module provisions AWS networking resources for a VPC. It supports creating VPCs, subnets, route tables, IGWs and NAT gateways,
 
-* vpc_main.tf : contains resource definition for VPC, IGW, Subnets, Routes and Route association (public & private)
-* nat_main.tf : contains resource definition for NAT Gateway, NAT Instance and corresponding Security Group, NAT Public_IP
-* variables.tf : contains all resources variables
-* local.tf : contains default tags local variable and local variable for Nat_Instance instance type
-* version.tf : contains terraform version and provider version
-* output.tf : contains the output of the created Resources IDs
+---
+
+## Features
+
+- **VPC Creation:** Provisions a VPC with a specified CIDR block and tags.
+- **Internet Gateway (IGW):** Optionally creates and attaches an IGW.
+- **Subnets:** Creates subnets (public/private) as defined in variables.
+- **Route Tables:** Sets up public/private route tables and associations.
+- **NAT Gateway:** Optionally creates a managed NAT Gateway with an Elastic IP.
+- **NAT Instance:** Optionally creates a NAT EC2 instance with:
+  - Automatic Ubuntu AMI selection
+  - Customizable instance details
+  - Security group with customizable ingress rules
+  - Optional public access (creator’s IP allowed)
+- **Elastic IP:** Allocates and associates EIP for NAT resources.
+- **Security Groups:** Configurable ingress/egress rules for NAT EC2.
+
+---
+
+## Variables
+
+- `vpc_cidr` – CIDR block for the VPC.
+- `vpc_name` – Name tag for the VPC.
+- `enable_igw` – Enable/disable Internet Gateway.
+- `enable_nat_gateway` – Enable/disable NAT Gateway.
+- `enable_nat_instance` – Enable/disable NAT Instance.
+- `subnets` – Map of subnet definitions (AZ, CIDR, type).
+- `aws_region` – AWS region for subnet AZ assignment.
+- `nat_subnet_name` – Name of the subnet for NAT resources.
+- `nat_instance_details` – Object for NAT Instance configuration (OS, arch, key, public access).
+- `nat_ingress` – Map of ingress rules for NAT Instance security group.
+- `vpc_cidr` – VPC CIDR block (used in security group rules).
+
+
 
 ## Requirements
 
@@ -42,8 +65,8 @@ No modules.
 | [aws_instance.nat_ec2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_internet_gateway.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway) | resource |
 | [aws_nat_gateway.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway) | resource |
-| [aws_route_table.priv_rt](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
-| [aws_route_table.pub_rt](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
+| [aws_route_table.main_priv_rt](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
+| [aws_route_table.main_pub_rt](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
 | [aws_route_table_association.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
 | [aws_route_table_association.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
 | [aws_security_group.nat_ec2_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
@@ -65,7 +88,7 @@ No modules.
 | <a name="input_nat_instance_details"></a> [nat\_instance\_details](#input\_nat\_instance\_details) | nat\_instance details. required if var.enable\_nat\_instance = true | <pre>object({<br/>    platform      = optional(string, "ubuntu")<br/>    os_version    = optional(string, "*22.04")<br/>    architecture  = optional(string, "amd64")<br/>    instance_type = optional(string, null)<br/>    key_name      = optional(string)<br/>    public_access = optional(bool, false) // to allow temporary public ssh access to nat_instance<br/>  })</pre> | `{}` | no |
 | <a name="input_nat_subnet_name"></a> [nat\_subnet\_name](#input\_nat\_subnet\_name) | public subnet for nat\_gateway or nat\_instance | `string` | `null` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | subnet in the respective az | `map(tuple([string, string, string]))` | n/a | yes |
-| <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | vpc ne twork address (cidr) | `string` | n/a | yes |
+| <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | vpc network address (cidr) | `string` | `""` | no |
 | <a name="input_vpc_name"></a> [vpc\_name](#input\_vpc\_name) | vpc name | `string` | n/a | yes |
 
 ## Outputs

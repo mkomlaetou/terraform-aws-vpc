@@ -34,7 +34,7 @@ resource "aws_subnet" "main" {
 
 
 // DEFAULT ROUTE FOR PUBLIC SUBNETS
-resource "aws_route_table" "pub_rt" {
+resource "aws_route_table" "main_pub_rt" {
   count  = var.enable_igw == true ? 1 : 0
   vpc_id = aws_vpc.main.id
 
@@ -43,7 +43,7 @@ resource "aws_route_table" "pub_rt" {
     gateway_id = aws_internet_gateway.main[0].id
   }
 
-  tags = merge(local.tags, tomap({ "Name" : "pub-rt" }))
+  tags = merge(local.tags, tomap({ "Name" : "main_pub_rt" }))
 
 }
 
@@ -53,7 +53,7 @@ resource "aws_route_table" "pub_rt" {
 ##########################
 
 // DEFAULT ROUTE FOR PRIVATE SUBNETS
-resource "aws_route_table" "priv_rt" {
+resource "aws_route_table" "main_priv_rt" {
   count  = var.enable_nat_gateway == true || var.enable_nat_instance == true ? 1 : 0
   vpc_id = aws_vpc.main.id
 
@@ -63,20 +63,20 @@ resource "aws_route_table" "priv_rt" {
     network_interface_id = var.enable_nat_instance == true ? aws_instance.nat_ec2[0].primary_network_interface_id : ""
 
   }
-  tags = merge(local.tags, tomap({ "Name" : "priv-rt" }))
+  tags = merge(local.tags, tomap({ "Name" : "main-priv-rt" }))
 }
 
 
 // ROUTE TABLE ASSOCIATION FOR PUBLIC SUBNETS
 resource "aws_route_table_association" "public" {
-  count          = length([for k, v in aws_subnet.main : k if lookup(v.tags, "subnet_type", "") == "public" && length(aws_route_table.pub_rt) > 0])
+  count          = length([for k, v in aws_subnet.main : k if lookup(v.tags, "subnet_type", "") == "public" && length(aws_route_table.main_pub_rt) > 0])
   subnet_id      = element([for k, v in aws_subnet.main : v.id if lookup(v.tags, "subnet_type", "") == "public"], count.index)
-  route_table_id = aws_route_table.pub_rt[0].id
+  route_table_id = aws_route_table.main_pub_rt[0].id
 }
 
 // ROUTE TABLE ASSOCIATION FOR PRIVATE SUBNETS
 resource "aws_route_table_association" "private" {
-  count          = length([for k, v in aws_subnet.main : k if lookup(v.tags, "subnet_type", "") == "private" && length(aws_route_table.priv_rt) > 0])
-  subnet_id      = element([for k, v in aws_subnet.main : v.id if lookup(v.tags, "subnet_type", "") == "private" && length(aws_route_table.priv_rt) > 0], count.index)
-  route_table_id = aws_route_table.priv_rt[0].id
+  count          = length([for k, v in aws_subnet.main : k if lookup(v.tags, "subnet_type", "") == "private" && length(aws_route_table.main_priv_rt) > 0])
+  subnet_id      = element([for k, v in aws_subnet.main : v.id if lookup(v.tags, "subnet_type", "") == "private" && length(aws_route_table.main_priv_rt) > 0], count.index)
+  route_table_id = aws_route_table.main_priv_rt[0].id
 }
